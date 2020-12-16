@@ -1,0 +1,12 @@
+.next
+node_modules
+.DS_Store
+package-lock.json
+test/setup/VisionWeb.js
+coverage
+yarn-error.log
+/dist
+.env
+.vscode/
+.idea/
+example/
