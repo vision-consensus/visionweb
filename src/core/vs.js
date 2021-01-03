@@ -1802,7 +1802,40 @@ export default class Vs {
         options.confirmed = false;
         return this._getBrokerage(address, options, callback);
     }
-
+    async getMarketOrderByID(orderId = false, callback = false) {
+        return this._getMarketOrderByID(orderId, callback);
+    }
+    async getMarketOrderByAccount(
+        ownerAddress = this.visionWeb.defaultAddress.hex,
+        callback = false
+    ) {
+        return this._getMarketOrderByAccount(ownerAddress, callback);
+    }
+    async getMarketPairList(callback = false) {
+        return this._getMarketPairList(callback);
+    }
+    async getMarketOrderList(
+        sellTokenName = false,
+        buyTokenName = false,
+        callback = false
+    ) {
+        return this._getMarketOrderListByPair(
+            sellTokenName,
+            buyTokenName,
+            callback
+        );
+    }
+    async getMarketPriceByPair(
+        sellTokenName = false,
+        buyTokenName = false,
+        callback = false
+    ) {
+        return this._getMarketPriceByPair(
+            sellTokenName,
+            buyTokenName,
+            callback
+        );
+    }
     async _getReward(
         address = this.visionWeb.defaultAddress.hex,
         options,
@@ -1856,7 +1889,6 @@ export default class Vs {
             })
             .catch((err) => callback(err));
     }
-
     async _getBrokerage(
         address = this.visionWeb.defaultAddress.hex,
         options,
@@ -1907,6 +1939,147 @@ export default class Vs {
                     return callback("Not found.");
 
                 callback(null, result.brokerage);
+            })
+            .catch((err) => callback(err));
+    }
+    async _getMarketOrderByID(orderId, callback = false) {
+        if (!callback)
+            return this.injectPromise(this._getMarketOrderByID, orderId);
+        if (
+            this.validator.notValid(
+                [
+                    {
+                        name: "order id",
+                        type: "not-empty-string",
+                        value: orderId,
+                    },
+                ],
+                callback
+            )
+        )
+            return;
+        const data = {
+            value: orderId,
+        };
+        this.visionWeb.fullNode
+            .request(`wallet/getmarketorderbyid`, data, "post")
+            .then((result = {}) => {
+                callback(null, result);
+            })
+            .catch((err) => callback(err));
+    }
+    async _getMarketOrderByAccount(ownerAddress, callback) {
+        if (!callback) {
+            return this.injectPromise(
+                this._getMarketOrderByAccount,
+                ownerAddress
+            );
+        }
+        if (
+            this.validator.notValid(
+                [{ name: "owner", type: "address", value: ownerAddress }],
+                callback
+            )
+        )
+            return;
+        const data = {
+            value: toHex(ownerAddress),
+        };
+        this.visionWeb.fullNode
+            .request(`wallet/getmarketorderbyaccount`, data, "post")
+            .then((result = {}) => {
+                if (typeof result.orders === "undefined")
+                    return callback("Not found.");
+                callback(null, result.orders);
+            })
+            .catch((err) => callback(err));
+    }
+    async _getMarketPairList(callback) {
+        if (!callback) return this.injectPromise(this._getMarketPairList);
+        this.visionWeb.fullNode
+            .request(`wallet/getmarketpairlist`, {}, "post")
+            .then((result = {}) => {
+                if (typeof result.orderPair === "undefined")
+                    return callback("Not found.");
+                callback(null, result.orderPair);
+            })
+            .catch((err) => callback(err));
+    }
+    async _getMarketOrderListByPair(sellTokenName, buyTokenName, callback) {
+        if (!callback) {
+            return this.injectPromise(
+                this._getMarketOrderListByPair,
+                sellTokenName,
+                buyTokenName
+            );
+        }
+        if (
+            this.validator.notValid(
+                [
+                    {
+                        name: "sell token name",
+                        type: "not-empty-string",
+                        value: sellTokenName,
+                    },
+                    {
+                        name: "buy token name",
+                        type: "not-empty-string",
+                        value: buyTokenName,
+                    },
+                ],
+                callback
+            )
+        )
+            return;
+        const data = {
+            sell_token_id: this.visionWeb.fromUtf8(sellTokenName),
+            buy_token_id: this.visionWeb.fromUtf8(buyTokenName),
+        };
+        this.visionWeb.fullNode
+            .request(`wallet/getmarketorderlistbypair`, data, "post")
+            .then((result = {}) => {
+                if (typeof result.orders === "undefined")
+                    return callback("Not found.");
+                callback(null, result.orders);
+            })
+            .catch((err) => callback(err));
+    }
+    async _getMarketPriceByPair(sellTokenName, buyTokenName, callback) {
+        if (!callback) {
+            return this.injectPromise(
+                this._getMarketPriceByPair,
+                sellTokenName,
+                buyTokenName
+            );
+        }
+        if (
+            this.validator.notValid(
+                [
+                    {
+                        name: "sell token name",
+                        type: "not-empty-string",
+                        value: sellTokenName,
+                    },
+                    {
+                        name: "buy token name",
+                        type: "not-empty-string",
+                        value: buyTokenName,
+                    },
+                ],
+                callback
+            )
+        )
+            return;
+        const data = {
+            sell_token_id: this.visionWeb.fromUtf8(sellTokenName),
+            buy_token_id: this.visionWeb.fromUtf8(buyTokenName),
+        };
+        this.visionWeb.fullNode
+            .request(`wallet/getmarketpricebypair`, data, "post")
+            .then((result = {}) => {
+                if (typeof result.prices === "undefined")
+                    return callback("Not found.");
+                callback(null, result.prices);
             })
             .catch((err) => callback(err));
     }
