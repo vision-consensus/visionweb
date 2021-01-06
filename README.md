@@ -24,13 +24,13 @@ You can also ship VisionWeb in a Chrome extension.
 ### Node.js
 
 ```bash
-npm install visionwebx
+npm install visionweb
 ```
 
 or
 
 ```bash
-yarn add visionwebx
+yarn add visionweb
 ```
 
 ### Browser
@@ -40,13 +40,13 @@ First, don't use the release section of this repo, it has not updated in a long 
 Then easiest way to use VisionWeb in a browser is to install it as above and copy the dist file to your working folder. For example:
 
 ```
-cp node_modules/visionwebx/dist/VisionWeb.js ./js/visionwebx.js
+cp node_modules/visionweb/dist/VisionWeb.js ./js/visionweb.js
 ```
 
 so that you can call it in your HTML page as
 
 ```
-<script src="./js/visionwebx.js"><script>
+<script src="./js/visionweb.js"><script>
 ```
 
 ## Creating an Instance
@@ -54,7 +54,7 @@ so that you can call it in your HTML page as
 First off, in your javascript file, define VisionWeb:
 
 ```js
-const VisionWeb = require("visionwebx");
+const VisionWeb = require("visionweb");
 ```
 
 When you instantiate VisionWeb you can define
