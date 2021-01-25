@@ -117,8 +117,8 @@ describe('VisionWeb.vs', function () {
                 let accountResource;
                 for (let type of addressType) {
                     accountResource = await visionWeb.vs.getAccountResources(accounts[type][idx]);
-                    assert.isDefined(accountResource.freeNetLimit);
-                    assert.isDefined(accountResource.TotalEnergyLimit);
+                    assert.isDefined(accountResource.freePhotonLimit);
+                    assert.isDefined(accountResource.TotalEntropyLimit);
                 }
             });
 
@@ -148,7 +148,7 @@ describe('VisionWeb.vs', function () {
         });
 
 
-        describe("#getBandwidth", async function () {
+        describe("#getPhoton", async function () {
 
             const idx = 10;
 
@@ -156,7 +156,7 @@ describe('VisionWeb.vs', function () {
                 const addressType = ['hex', 'b58'];
                 let bp;
                 for (let type of addressType) {
-                    bp = await visionWeb.vs.getBandwidth(accounts[type][idx]);
+                    bp = await visionWeb.vs.getPhoton(accounts[type][idx]);
                     assert.isTrue(bp >= 0);
                 }
             });
@@ -282,7 +282,7 @@ describe('VisionWeb.vs', function () {
             let transaction;
 
             beforeEach(async function() {
-                transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[idx]);
+                transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[idx]);
             });
 
             it('should sign a transaction', async function () {
@@ -415,7 +415,7 @@ describe('VisionWeb.vs', function () {
 
             it('should multi-sign a transaction by owner permission', async function () {
 
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
                 let signedTransaction = transaction;
                 for (let i = idxS; i < idxE; i++) {
                     signedTransaction = await visionWeb.vs.multiSign(signedTransaction, accounts.pks[i], 0);
@@ -431,7 +431,7 @@ describe('VisionWeb.vs', function () {
 
             it('should multi-sign a transaction by owner permission (permission id inside tx)', async function () {
 
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx], {permissionId: 0});
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx], {permissionId: 0});
                 let signedTransaction = transaction;
                 for (let i = idxS; i < idxE; i++) {
                     signedTransaction = await visionWeb.vs.multiSign(signedTransaction, accounts.pks[i]);
@@ -448,7 +448,7 @@ describe('VisionWeb.vs', function () {
             it('should verify weight after multi-sign by owner permission', async function () {
 
                 // create transaction and do multi-sign
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
 
                 // sign and verify sign weight
                 let signedTransaction = transaction;
@@ -475,7 +475,7 @@ describe('VisionWeb.vs', function () {
             it('should verify weight after multi-sign by owner permission (permission id inside tx)', async function () {
 
                 // create transaction and do multi-sign
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx], {permissionId: 0});
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx], {permissionId: 0});
 
                 // sign and verify sign weight
                 let signedTransaction = transaction;
@@ -501,7 +501,7 @@ describe('VisionWeb.vs', function () {
 
             it('should multi-sign a transaction with no permission error by owner permission', async function () {
 
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
                 try {
                     await visionWeb.vs.multiSign(transaction, (accounts.pks[ownerIdx] + '123'), 0);
                 } catch (e) {
@@ -512,7 +512,7 @@ describe('VisionWeb.vs', function () {
 
             it('should multi-sign duplicated a transaction by owner permission', async function () {
 
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
                 try {
                     let signedTransaction = await visionWeb.vs.multiSign(transaction, accounts.pks[ownerIdx], 0);
                     await visionWeb.vs.multiSign(signedTransaction, accounts.pks[ownerIdx], 0);
@@ -524,7 +524,7 @@ describe('VisionWeb.vs', function () {
 
             it('should multi-sign a transaction by active permission', async function () {
 
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
                 let signedTransaction = transaction;
                 for (let i = idxS; i < idxE; i++) {
                     signedTransaction = await visionWeb.vs.multiSign(signedTransaction, accounts.pks[i], 2);
@@ -540,7 +540,7 @@ describe('VisionWeb.vs', function () {
 
             it('should multi-sign a transaction by active permission (permission id inside tx)', async function () {
 
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx], {permissionId: 2});
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx], {permissionId: 2});
                 let signedTransaction = transaction;
                 for (let i = idxS; i < idxE; i++) {
                     signedTransaction = await visionWeb.vs.multiSign(signedTransaction, accounts.pks[i]);
@@ -557,7 +557,7 @@ describe('VisionWeb.vs', function () {
             it('should verify weight after multi-sign by active permission', async function () {
 
                 // create transaction and do multi-sign
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
 
                 // sign and verify sign weight
                 let signedTransaction = transaction;
@@ -584,7 +584,7 @@ describe('VisionWeb.vs', function () {
             it('should verify weight after multi-sign by active permission (permission id inside tx)', async function () {
 
                 // create transaction and do multi-sign
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx], {permissionId: 2});
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx], {permissionId: 2});
 
                 // sign and verify sign weight
                 let signedTransaction = transaction;
@@ -610,7 +610,7 @@ describe('VisionWeb.vs', function () {
 
             it('should multi-sign a transaction with no permission error by active permission', async function () {
 
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
                 try {
                     await visionWeb.vs.multiSign(transaction, (accounts.pks[ownerIdx] + '123'), 2);
                 } catch (e) {
@@ -621,7 +621,7 @@ describe('VisionWeb.vs', function () {
 
             it('should multi-sign duplicated a transaction by active permission', async function () {
 
-                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
                 try {
                     let signedTransaction = await visionWeb.vs.multiSign(transaction, accounts.pks[ownerIdx], 2);
                     await visionWeb.vs.multiSign(signedTransaction, accounts.pks[ownerIdx], 2);
@@ -634,7 +634,7 @@ describe('VisionWeb.vs', function () {
             it('should multi-sign a transaction with permission error by both owner and active permission', async function () {
 
                 try {
-                    const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                    const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
                     let signedTransaction = await visionWeb.vs.multiSign(transaction, accounts.pks[ownerIdx], 0);
                     await visionWeb.vs.multiSign(signedTransaction, accounts.pks[ownerIdx], 2);
                 } catch (e) {
@@ -646,7 +646,7 @@ describe('VisionWeb.vs', function () {
             it('should multi-sign a transaction with wrong permission id error', async function () {
 
                 try {
-                    const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[ownerIdx]);
+                    const transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[ownerIdx]);
                     await visionWeb.vs.multiSign(transaction, accounts.pks[ownerIdx], 1);
                 } catch (e) {
                     assert.isTrue(e.indexOf('permission isn\'t exit') != -1);
@@ -874,45 +874,45 @@ describe('VisionWeb.vs', function () {
             const idx = 25;
             // const receiverIdx = 26;
 
-            it('should freeze balance for energy or bandwidth', async function () {
+            it('should freeze balance for entropy or photon', async function () {
                 this.timeout(20000);
 
                 let accountBefore = await visionWeb.vs.getAccount(accounts.hex[idx]);
-                await visionWeb.vs.freezeBalance(10e5, 3, 'BANDWIDTH', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
+                await visionWeb.vs.freezeBalance(10e5, 3, 'PHOTON', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
                 await waitChainData('freezeBp', accounts.hex[idx], 0);
                 let accountAfter = await visionWeb.vs.getUnconfirmedAccount(accounts.hex[idx]);
                 assert.equal((!accountBefore.frozen ? 0: accountBefore.frozen[0].frozen_balance) + 10e5, accountAfter.frozen[0].frozen_balance);
 
                 accountBefore = accountAfter;
-                await visionWeb.vs.freezeBalance(10e5, 3, 'ENERGY', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
-                await waitChainData('freezeEnergy', accounts.hex[idx], 0);
+                await visionWeb.vs.freezeBalance(10e5, 3, 'ENTROPY', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
+                await waitChainData('freezeEntropy', accounts.hex[idx], 0);
                 accountAfter = await visionWeb.vs.getUnconfirmedAccount(accounts.hex[idx]);
                 assert.equal(
                     (!accountBefore.account_resource ||
-                    !accountBefore.account_resource.frozen_balance_for_energy
+                    !accountBefore.account_resource.frozen_balance_for_entropy
                         ? 0
-                        : accountBefore.account_resource.frozen_balance_for_energy.frozen_balance) + 10e5,
-                    accountAfter.account_resource.frozen_balance_for_energy.frozen_balance
+                        : accountBefore.account_resource.frozen_balance_for_entropy.frozen_balance) + 10e5,
+                    accountAfter.account_resource.frozen_balance_for_entropy.frozen_balance
                 );
             });
 
-            it('should throw invalid resource provided: expected "BANDWIDTH" or "ENERGY" error', async function () {
+            it('should throw invalid resource provided: expected "PHOTON" or "ENTROPY" error', async function () {
                 await assertThrow(
                     visionWeb.vs.freezeBalance(10e8, 3, 'GAS', { privateKey: accounts.pks[idx], address: accounts.hex[idx] }),
-                    'Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"'
+                    'Invalid resource provided: Expected "PHOTON" or "ENTROPY"'
                 );
             });
 
             it('should throw invalid amount provided error', async function () {
                 await assertThrow(
-                    visionWeb.vs.freezeBalance(-10, 3, 'BANDWIDTH', { privateKey: accounts.pks[idx], address: accounts.hex[idx] }),
+                    visionWeb.vs.freezeBalance(-10, 3, 'PHOTON', { privateKey: accounts.pks[idx], address: accounts.hex[idx] }),
                     'Invalid amount provided'
                 );
             });
 
             it('should throw invalid duration provided, minimum of 3 days error', async function () {
                 await assertThrow(
-                    visionWeb.vs.freezeBalance(10e8, 2, 'BANDWIDTH', { privateKey: accounts.pks[idx], address: accounts.hex[idx] }),
+                    visionWeb.vs.freezeBalance(10e8, 2, 'PHOTON', { privateKey: accounts.pks[idx], address: accounts.hex[idx] }),
                     'Invalid duration provided, minimum of 3 days'
                 );
             });
@@ -924,29 +924,29 @@ describe('VisionWeb.vs', function () {
         describe.skip("#unfreezeBalance", async function () {
 
             before(async function(){
-                await visionWeb.vs.freezeBalance(10e5, 3, 'BANDWIDTH', {}, accounts.b58[15]);
-                await visionWeb.vs.freezeBalance(10e5, 3, 'ENERGY', {}, accounts.b58[15]);
+                await visionWeb.vs.freezeBalance(10e5, 3, 'PHOTON', {}, accounts.b58[15]);
+                await visionWeb.vs.freezeBalance(10e5, 3, 'ENTROPY', {}, accounts.b58[15]);
             });
 
             it('should unfreeze balance', async function () {
                 let accountBefore = await visionWeb.vs.getUnconfirmedAccount(ADDRESS_HEX);
-                await visionWeb.vs.unfreezeBalance('BANDWIDTH', {}, accounts.b58[15]);
+                await visionWeb.vs.unfreezeBalance('PHOTON', {}, accounts.b58[15]);
                 let accountAfter = await visionWeb.vs.getUnconfirmedAccount(ADDRESS_HEX);
                 assert.equal(accountBefore.frozen[0].frozen_balance - 10e5, accountAfter.frozen[0].frozen_balance);
 
                 accountBefore = accountAfter;
-                await visionWeb.vs.unfreezeBalance('ENERGY', {}, accounts.b58[15]);
+                await visionWeb.vs.unfreezeBalance('ENTROPY', {}, accounts.b58[15]);
                 accountAfter = await visionWeb.vs.getUnconfirmedAccount(ADDRESS_HEX);
                 assert.equal(
-                    accountBefore.account_resource.frozen_balance_for_energy.frozen_balance - 10e5,
-                    accountAfter.account_resource.frozen_balance_for_energy.frozen_balance
+                    accountBefore.account_resource.frozen_balance_for_entropy.frozen_balance - 10e5,
+                    accountAfter.account_resource.frozen_balance_for_entropy.frozen_balance
                 );
             });
 
-            it('should throw invalid resource provided: expected "BANDWIDTH" or "ENERGY" error', async function () {
+            it('should throw invalid resource provided: expected "PHOTON" or "ENTROPY" error', async function () {
                 await assertThrow(
                     visionWeb.vs.unfreezeBalance(10e8, 3, 'GAS', {}, accounts.b58[15]),
-                    'Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"'
+                    'Invalid resource provided: Expected "PHOTON" or "ENTROPY"'
                 );
             });
 
@@ -960,7 +960,7 @@ describe('VisionWeb.vs', function () {
             let signedTransaction;
 
             before(async function () {
-                transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'BANDWIDTH', accounts.b58[idx]);
+                transaction = await visionWeb.transactionBuilder.freezeBalance(10e5, 3, 'PHOTON', accounts.b58[idx]);
                 signedTransaction = await visionWeb.vs.sign(transaction, accounts.pks[idx]);
             });
 
@@ -1002,7 +1002,7 @@ describe('VisionWeb.vs', function () {
             before(async function(){
                 this.timeout(10000);
 
-                transaction = await visionWeb.vs.freezeBalance(10e5, 3, 'BANDWIDTH', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
+                transaction = await visionWeb.vs.freezeBalance(10e5, 3, 'PHOTON', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
                 transaction = transaction.transaction;
                 await waitChainData('tx', transaction.txID);
             });
@@ -1031,7 +1031,7 @@ describe('VisionWeb.vs', function () {
             before(async function(){
                 this.timeout(10000);
                 // await wait(5); // wait for new clear block generated
-                transaction = await visionWeb.vs.freezeBalance(10e5, 3, 'BANDWIDTH', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
+                transaction = await visionWeb.vs.freezeBalance(10e5, 3, 'PHOTON', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
                 transaction = transaction.transaction;
                 const currBlock = await visionWeb.vs.getBlock('latest');
                 currBlockNum = currBlock.block_header.raw_data.number;
@@ -1090,7 +1090,7 @@ describe('VisionWeb.vs', function () {
             let transaction;
 
             before(async function(){
-                transaction = await visionWeb.vs.freezeBalance(10e5, 3, 'BANDWIDTH', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
+                transaction = await visionWeb.vs.freezeBalance(10e5, 3, 'PHOTON', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
                 transaction = transaction.transaction;
             });
 
@@ -1117,7 +1117,7 @@ describe('VisionWeb.vs', function () {
             let transaction;
 
             before(async function(){
-                transaction = (await visionWeb.vs.freezeBalance(10e5, 3, 'BANDWIDTH', { privateKey: accounts.pks[idx], address: accounts.hex[idx] })).transaction;
+                transaction = (await visionWeb.vs.freezeBalance(10e5, 3, 'PHOTON', { privateKey: accounts.pks[idx], address: accounts.hex[idx] })).transaction;
                 await waitChainData('tx', transaction.txID);
             });
 
@@ -1144,7 +1144,7 @@ describe('VisionWeb.vs', function () {
             let transaction;
 
             before(async function(){
-                transaction = await visionWeb.vs.freezeBalance(10e5, 3, 'BANDWIDTH', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
+                transaction = await visionWeb.vs.freezeBalance(10e5, 3, 'PHOTON', { privateKey: accounts.pks[idx], address: accounts.hex[idx] });
             });
 
             it('should get confirmed transaction by tx id', async function () {

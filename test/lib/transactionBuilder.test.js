@@ -369,41 +369,41 @@ describe('VisionWeb.transactionBuilder', function () {
 
         });
 
-        it('should throw if freeBandwidth is invalid', async function () {
+        it('should throw if freePhoton is invalid', async function () {
 
             const options = getTokenOptions();
-            options.freeBandwidth = -1;
+            options.freePhoton = -1;
 
             await assertThrow(
                 visionWeb.transactionBuilder.createToken(options),
-                'Invalid Free bandwidth amount provided'
+                'Invalid Free photon amount provided'
             );
 
-            options.freeBandwidth = 'something';
+            options.freePhoton = 'something';
 
             await assertThrow(
                 visionWeb.transactionBuilder.createToken(options),
-                'Invalid Free bandwidth amount provided'
+                'Invalid Free photon amount provided'
             );
 
         });
 
-        it('should throw if freeBandwidthLimit is invalid', async function () {
+        it('should throw if freePhotonLimit is invalid', async function () {
             const options = getTokenOptions();
 
-            options.freeBandwidth = 10;
-            delete options.freeBandwidthLimit;
+            options.freePhoton = 10;
+            delete options.freePhotonLimit;
 
             await assertThrow(
                 visionWeb.transactionBuilder.createToken(options),
-                'Invalid Free bandwidth limit provided'
+                'Invalid Free photon limit provided'
             );
 
-            options.freeBandwidthLimit = 'something';
+            options.freePhotonLimit = 'something';
 
             await assertThrow(
                 visionWeb.transactionBuilder.createToken(options),
-                'Invalid Free bandwidth limit provided'
+                'Invalid Free photon limit provided'
             );
 
         });
@@ -633,41 +633,41 @@ describe('VisionWeb.transactionBuilder', function () {
 
         });
 
-        it('should throw if freeBandwidth is invalid', async function () {
+        it('should throw if freePhoton is invalid', async function () {
 
             const options = _.clone(UPDATED_TEST_TOKEN_OPTIONS);
-            options.freeBandwidth = -1;
+            options.freePhoton = -1;
 
             await assertThrow(
                 visionWeb.transactionBuilder.updateToken(options, accounts.hex[2]),
-                'Free bandwidth amount must be a positive integer'
+                'Free photon amount must be a positive integer'
             );
 
-            options.freeBandwidth = 'something';
+            options.freePhoton = 'something';
 
             await assertThrow(
                 visionWeb.transactionBuilder.updateToken(options, accounts.hex[2]),
-                'Free bandwidth amount must be a positive integer'
+                'Free photon amount must be a positive integer'
             );
 
         });
 
-        it('should throw if freeBandwidthLimit is invalid', async function () {
+        it('should throw if freePhotonLimit is invalid', async function () {
             const options = _.clone(UPDATED_TEST_TOKEN_OPTIONS);
 
-            options.freeBandwidth = 10;
-            delete options.freeBandwidthLimit;
+            options.freePhoton = 10;
+            delete options.freePhotonLimit;
 
             await assertThrow(
                 visionWeb.transactionBuilder.updateToken(options, accounts.hex[2]),
-                'Free bandwidth limit must be a positive integer'
+                'Free photon limit must be a positive integer'
             );
 
-            options.freeBandwidthLimit = 'something';
+            options.freePhotonLimit = 'something';
 
             await assertThrow(
                 visionWeb.transactionBuilder.updateToken(options, accounts.hex[2]),
-                'Free bandwidth limit must be a positive integer'
+                'Free photon limit must be a positive integer'
             );
 
         });
@@ -1088,8 +1088,8 @@ describe('VisionWeb.transactionBuilder', function () {
 
         it('should allows accounts[1] to freeze its balance', async function () {
             const params = [
-                [100e6, 3, 'BANDWIDTH', accounts.b58[1], {permissionId: 2}],
-                [100e6, 3, 'BANDWIDTH', accounts.b58[1]]
+                [100e6, 3, 'PHOTON', accounts.b58[1], {permissionId: 2}],
+                [100e6, 3, 'PHOTON', accounts.b58[1]]
             ];
 
             for (let param of params) {
@@ -1126,7 +1126,7 @@ describe('VisionWeb.transactionBuilder', function () {
         before(async function () {
 
             await broadcaster(visionWeb.transactionBuilder.applyForSR(accounts.b58[0], url), accounts.pks[0])
-            await broadcaster(visionWeb.transactionBuilder.freezeBalance(100e6, 3, 'BANDWIDTH', accounts.b58[1]), accounts.pks[1])
+            await broadcaster(visionWeb.transactionBuilder.freezeBalance(100e6, 3, 'PHOTON', accounts.b58[1]), accounts.pks[1])
         })
 
 
@@ -1158,7 +1158,7 @@ describe('VisionWeb.transactionBuilder', function () {
                 if (i === 1) options.permissionId = 2;
                 const tx = await visionWeb.transactionBuilder.createSmartContract(options)
                 assert.equal(tx.raw_data.contract[0].parameter.value.new_contract.consume_user_resource_percent, 100);
-                assert.equal(tx.raw_data.contract[0].parameter.value.new_contract.origin_energy_limit, 1e7);
+                assert.equal(tx.raw_data.contract[0].parameter.value.new_contract.origin_entropy_limit, 1e7);
                 assert.equal(tx.raw_data.fee_limit, 2e7);
                 assert.equal(tx.raw_data.contract[0].Permission_id || 0, options.permissionId || 0);
             }
@@ -1201,14 +1201,14 @@ describe('VisionWeb.transactionBuilder', function () {
                 abi: testRevert.abi,
                 bytecode: testRevert.bytecode,
                 userFeePercentage: 30,
-                originEnergyLimit: 9e6,
+                originEntropyLimit: 9e6,
                 feeLimit: 9e8
             };
             for (let i = 0; i < 2; i++) {
                 if (i === 1) options.permissionId = 2;
                 const tx = await visionWeb.transactionBuilder.createSmartContract(options)
                 assert.equal(tx.raw_data.contract[0].parameter.value.new_contract.consume_user_resource_percent, 30);
-                assert.equal(tx.raw_data.contract[0].parameter.value.new_contract.origin_energy_limit, 9e6);
+                assert.equal(tx.raw_data.contract[0].parameter.value.new_contract.origin_entropy_limit, 9e6);
                 assert.equal(tx.raw_data.fee_limit, 9e8);
                 assert.equal(tx.raw_data.contract[0].Permission_id || 0, options.permissionId || 0);
             }

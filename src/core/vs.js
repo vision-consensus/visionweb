@@ -571,7 +571,7 @@ export default class Vs {
             .catch((err) => callback(err));
     }
 
-    getBandwidth(
+    getPhoton(
         address = this.visionWeb.defaultAddress.hex,
         callback = false
     ) {
@@ -580,7 +580,7 @@ export default class Vs {
             address = this.visionWeb.defaultAddress.hex;
         }
 
-        if (!callback) return this.injectPromise(this.getBandwidth, address);
+        if (!callback) return this.injectPromise(this.getPhoton, address);
 
         if (!this.visionWeb.isAddress(address))
             return callback("Invalid address provided");
@@ -589,7 +589,7 @@ export default class Vs {
 
         this.visionWeb.fullNode
             .request(
-                "wallet/getaccountnet",
+                "wallet/getaccountphoton",
                 {
                     address,
                 },
@@ -597,14 +597,14 @@ export default class Vs {
             )
             .then(
                 ({
-                    freeNetUsed = 0,
-                    freeNetLimit = 0,
-                    NetUsed = 0,
-                    NetLimit = 0,
+                    freePhotonUsed = 0,
+                    freePhotonLimit = 0,
+                    PhotonUsed = 0,
+                    PhotonLimit = 0,
                 }) => {
                     callback(
                         null,
-                        freeNetLimit - freeNetUsed + (NetLimit - NetUsed)
+                        freePhotonLimit - freePhotonUsed + (PhotonLimit - PhotonUsed)
                     );
                 }
             )
@@ -1315,19 +1315,19 @@ export default class Vs {
 
     /**
      * Freezes an amount of VS.
-     * Will give bandwidth OR Energy and VISION Power(voting rights)
+     * Will give photon OR Entropy and VISION Power(voting rights)
      * to the owner of the frozen tokens.
      *
      * @param amount - is the number of frozen vs
      * @param duration - is the duration in days to be frozen
-     * @param resource - is the type, must be either "ENERGY" or "BANDWIDTH"
+     * @param resource - is the type, must be either "ENTROPY" or "PHOTON"
      * @param options
      * @param callback
      */
     async freezeBalance(
         amount = 0,
         duration = 3,
-        resource = "BANDWIDTH",
+        resource = "PHOTON",
         options = {},
         receiverAddress = undefined,
         callback = false
@@ -1343,7 +1343,7 @@ export default class Vs {
 
         if (utils.isFunction(resource)) {
             callback = resource;
-            resource = "BANDWIDTH";
+            resource = "PHOTON";
         }
 
         if (utils.isFunction(options)) {
@@ -1363,9 +1363,9 @@ export default class Vs {
                 receiverAddress
             );
 
-        if (!["BANDWIDTH", "ENERGY"].includes(resource))
+        if (!["PHOTON", "ENTROPY"].includes(resource))
             return callback(
-                'Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"'
+                'Invalid resource provided: Expected "PHOTON" or "ENTROPY"'
             );
 
         if (!utils.isInteger(amount) || amount <= 0)
@@ -1410,14 +1410,14 @@ export default class Vs {
 
     /**
      * Unfreeze VS that has passed the minimum freeze duration.
-     * Unfreezing will remove bandwidth and VISION Power.
+     * Unfreezing will remove photon and VISION Power.
      *
-     * @param resource - is the type, must be either "ENERGY" or "BANDWIDTH"
+     * @param resource - is the type, must be either "ENTROPY" or "PHOTON"
      * @param options
      * @param callback
      */
     async unfreezeBalance(
-        resource = "BANDWIDTH",
+        resource = "PHOTON",
         options = {},
         receiverAddress = undefined,
         callback = false
@@ -1429,7 +1429,7 @@ export default class Vs {
 
         if (utils.isFunction(resource)) {
             callback = resource;
-            resource = "BANDWIDTH";
+            resource = "PHOTON";
         }
 
         if (utils.isFunction(options)) {
@@ -1447,9 +1447,9 @@ export default class Vs {
                 receiverAddress
             );
 
-        if (!["BANDWIDTH", "ENERGY"].includes(resource))
+        if (!["PHOTON", "ENTROPY"].includes(resource))
             return callback(
-                'Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"'
+                'Invalid resource provided: Expected "PHOTON" or "ENTROPY"'
             );
 
         options = {

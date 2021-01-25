@@ -279,7 +279,7 @@ export default class TransactionBuilder {
     freezeBalance(
         amount = 0,
         duration = 3,
-        resource = "BANDWIDTH",
+        resource = "PHOTON",
         address = this.visionWeb.defaultAddress.hex,
         receiverAddress = undefined,
         options,
@@ -313,7 +313,7 @@ export default class TransactionBuilder {
 
         if (utils.isFunction(resource)) {
             callback = resource;
-            resource = "BANDWIDTH";
+            resource = "PHOTON";
         }
 
         if (!callback)
@@ -358,7 +358,7 @@ export default class TransactionBuilder {
                         type: "resource",
                         value: resource,
                         msg:
-                            'Invalid resource provided: Expected "BANDWIDTH" or "ENERGY',
+                            'Invalid resource provided: Expected "PHOTON" or "ENTROPY',
                     },
                 ],
                 callback
@@ -391,7 +391,7 @@ export default class TransactionBuilder {
     }
 
     unfreezeBalance(
-        resource = "BANDWIDTH",
+        resource = "PHOTON",
         address = this.visionWeb.defaultAddress.hex,
         receiverAddress = undefined,
         options,
@@ -420,7 +420,7 @@ export default class TransactionBuilder {
 
         if (utils.isFunction(resource)) {
             callback = resource;
-            resource = "BANDWIDTH";
+            resource = "PHOTON";
         }
 
         if (!callback)
@@ -451,7 +451,7 @@ export default class TransactionBuilder {
                         type: "resource",
                         value: resource,
                         msg:
-                            'Invalid resource provided: Expected "BANDWIDTH" or "ENERGY',
+                            'Invalid resource provided: Expected "PHOTON" or "ENTROPY',
                     },
                 ],
                 callback
@@ -697,7 +697,7 @@ export default class TransactionBuilder {
         if (typeof userFeePercentage !== "number" && !userFeePercentage) {
             userFeePercentage = 100;
         }
-        const originEnergyLimit = options.originEnergyLimit || 10_000_000;
+        const originEntropyLimit = options.originEntropyLimit || 10_000_000;
         const callValue = options.callValue || 0;
         const tokenValue = options.tokenValue;
         const tokenId = options.tokenId || options.token_id;
@@ -755,9 +755,9 @@ export default class TransactionBuilder {
                         lte: 100,
                     },
                     {
-                        name: "originEnergyLimit",
+                        name: "originEntropyLimit",
                         type: "integer",
-                        value: originEnergyLimit,
+                        value: originEntropyLimit,
                         gte: 0,
                         lte: 10_000_000,
                     },
@@ -848,7 +848,7 @@ export default class TransactionBuilder {
             fee_limit: parseInt(feeLimit),
             call_value: parseInt(callValue),
             consume_user_resource_percent: userFeePercentage,
-            origin_energy_limit: originEnergyLimit,
+            origin_entropy_limit: originEntropyLimit,
             abi: JSON.stringify(abi),
             bytecode,
             parameter: parameters,
@@ -1145,8 +1145,8 @@ export default class TransactionBuilder {
             tokenRatio = 1, // How many tokens will `vsRatio` afford?
             saleStart = Date.now(),
             saleEnd = false,
-            freeBandwidth = 0, // The creator's "donated" bandwidth for use by token holders
-            freeBandwidthLimit = 0, // Out of `totalFreeBandwidth`, the amount each token holder get
+            freePhoton = 0, // The creator's "donated" photon for use by token holders
+            freePhotonLimit = 0, // Out of `totalFreePhoton`, the amount each token holder get
             frozenAmount = 0,
             frozenDuration = 0,
             // for now there is no default for the following values
@@ -1210,15 +1210,15 @@ export default class TransactionBuilder {
                         gt: saleStart,
                     },
                     {
-                        name: "Free bandwidth amount",
+                        name: "Free photon amount",
                         type: "integer",
-                        value: freeBandwidth,
+                        value: freePhoton,
                         gte: 0,
                     },
                     {
-                        name: "Free bandwidth limit",
+                        name: "Free photon limit",
                         type: "integer",
-                        value: freeBandwidthLimit,
+                        value: freePhotonLimit,
                         gte: 0,
                     },
                     {
@@ -1266,8 +1266,8 @@ export default class TransactionBuilder {
             num: parseInt(tokenRatio),
             start_time: parseInt(saleStart),
             end_time: parseInt(saleEnd),
-            free_asset_net_limit: parseInt(freeBandwidth),
-            public_free_asset_net_limit: parseInt(freeBandwidthLimit),
+            free_asset_photon_limit: parseInt(freePhoton),
+            public_free_asset_photon_limit: parseInt(freePhotonLimit),
             frozen_supply: {
                 frozen_amount: parseInt(frozenAmount),
                 frozen_days: parseInt(frozenDuration),
@@ -1437,8 +1437,8 @@ export default class TransactionBuilder {
         const {
             description = false,
             url = false,
-            freeBandwidth = 0, // The creator's "donated" bandwidth for use by token holders
-            freeBandwidthLimit = 0, // Out of `totalFreeBandwidth`, the amount each token holder get
+            freePhoton = 0, // The creator's "donated" photon for use by token holders
+            freePhotonLimit = 0, // Out of `totalFreePhoton`, the amount each token holder get
         } = options;
 
         if (
@@ -1460,14 +1460,14 @@ export default class TransactionBuilder {
                         value: issuerAddress,
                     },
                     {
-                        name: "Free bandwidth amount",
+                        name: "Free photon amount",
                         type: "positive-integer",
-                        value: freeBandwidth,
+                        value: freePhoton,
                     },
                     {
-                        name: "Free bandwidth limit",
+                        name: "Free photon limit",
                         type: "positive-integer",
-                        value: freeBandwidthLimit,
+                        value: freePhotonLimit,
                     },
                 ],
                 callback
@@ -1479,8 +1479,8 @@ export default class TransactionBuilder {
             owner_address: toHex(issuerAddress),
             description: fromUtf8(description),
             url: fromUtf8(url),
-            new_limit: parseInt(freeBandwidth),
-            new_public_limit: parseInt(freeBandwidthLimit),
+            new_limit: parseInt(freePhoton),
+            new_public_limit: parseInt(freePhotonLimit),
         };
 
         if (options && options.permissionId) {
@@ -2231,11 +2231,11 @@ export default class TransactionBuilder {
     }
 
     /**
-     * Update energy limit.
+     * Update entropy limit.
      */
-    updateEnergyLimit(
+    updateEntropyLimit(
         contractAddress = false,
-        originEnergyLimit = false,
+        originEntropyLimit = false,
         ownerAddress = this.visionWeb.defaultAddress.hex,
         options,
         callback = false
@@ -2255,9 +2255,9 @@ export default class TransactionBuilder {
 
         if (!callback)
             return this.injectPromise(
-                this.updateEnergyLimit,
+                this.updateEntropyLimit,
                 contractAddress,
-                originEnergyLimit,
+                originEntropyLimit,
                 ownerAddress,
                 options
             );
@@ -2276,9 +2276,9 @@ export default class TransactionBuilder {
                         value: contractAddress,
                     },
                     {
-                        name: "originEnergyLimit",
+                        name: "originEntropyLimit",
                         type: "integer",
-                        value: originEnergyLimit,
+                        value: originEntropyLimit,
                         gte: 0,
                         lte: 10_000_000,
                     },
@@ -2291,7 +2291,7 @@ export default class TransactionBuilder {
         const data = {
             owner_address: toHex(ownerAddress),
             contract_address: toHex(contractAddress),
-            origin_energy_limit: originEnergyLimit,
+            origin_entropy_limit: originEntropyLimit,
         };
 
         if (options && options.permissionId) {
@@ -2299,7 +2299,7 @@ export default class TransactionBuilder {
         }
 
         this.visionWeb.fullNode
-            .request("wallet/updateenergylimit", data, "post")
+            .request("wallet/updateentropylimit", data, "post")
             .then((transaction) => resultManager(transaction, callback))
             .catch((err) => callback(err));
     }
