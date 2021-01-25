@@ -99,7 +99,7 @@ export default class Validator {
                     break;
 
                 case "resource":
-                    if (!["BANDWIDTH", "ENERGY"].includes(value)) {
+                    if (!["PHOTON", "ENTROPY"].includes(value)) {
                         no = true;
                     }
                     break;

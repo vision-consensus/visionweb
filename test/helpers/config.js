@@ -14,8 +14,8 @@ module.exports = {
     UPDATED_TEST_TOKEN_OPTIONS: {
         description: 'Very useless utility token',
         url: 'https://none.example.com',
-        freeBandwidth: 10,
-        freeBandwidthLimit: 100
+        freePhoton: 10,
+        freePhotonLimit: 100
     },
     getTokenOptions: () => {
         const rnd = Math.random().toString(36).substr(2);
@@ -31,8 +31,8 @@ module.exports = {
             vsRatio: 10,
             tokenRatio: 2,
             saleStart: Date.now() + 500,
-            freeBandwidth: 100,
-            freeBandwidthLimit: 1000
+            freePhoton: 100,
+            freePhotonLimit: 1000
         }
     },
     isProposalApproved: async (visionWeb, proposal) => {

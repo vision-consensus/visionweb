@@ -56,11 +56,11 @@ module.exports = async function (type, ...params) {
                     isFound = data.frozen && (data.frozen[0].frozen_balance !== params[1]);
                     break;
                 }
-                case 'freezeEnergy': {
+                case 'freezeEntropy': {
                     data = await visionWeb.vs.getUnconfirmedAccount(params[0]);
                     isFound = data.account_resource &&
-                        data.account_resource.frozen_balance_for_energy &&
-                        (data.account_resource.frozen_balance_for_energy.frozen_balance !== params[1]);
+                        data.account_resource.frozen_balance_for_entropy &&
+                        (data.account_resource.frozen_balance_for_entropy.frozen_balance !== params[1]);
                     break;
                 }
                 case 'contract': {
