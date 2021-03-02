@@ -200,6 +200,7 @@ export default class Contract {
 
             this.address = contract.contract_address;
             this.bytecode = contract.bytecode;
+            this.name = contract.name;
             this.deployed = true;
 
             this.loadAbi(contract.abi ? contract.abi.entrys ? contract.abi.entrys : [] : []);
