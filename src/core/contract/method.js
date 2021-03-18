@@ -187,7 +187,7 @@ export default class Method {
             );
 
         if (types.length !== args.length)
-            throw new Error("Invalid argument count provided");
+            throw callback("Invalid argument count provided");
 
         if (!this.contract.address)
             return callback("Smart contract is missing address");
