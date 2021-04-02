@@ -13,6 +13,7 @@ import Event from "core/event";
 import SideChain from "core/sidechain";
 import { keccak256 } from "utils/ethersUtils";
 import { ADDRESS_PREFIX } from "config/address";
+import createKeccakHash from 'keccak';
 
 const DEFAULT_VERSION = "1.0.0";
 
@@ -287,6 +288,27 @@ export default class VisionWeb extends EventEmitter {
                     return false;
                 }
             },
+            fromEth(address) {
+                if (!address || address.indexOf('0x') !== 0) {
+                    return false;
+                }
+                try {
+                    address = address.toLowerCase().replace('0x', '')
+                    let hash = createKeccakHash('keccak256').update(address).digest('hex')
+                    let ret = '46'
+                    for (let i = 0; i < address.length; i++) {
+                        if (parseInt(hash[i], 16) >= 8) {
+                        ret += address[i].toUpperCase()
+                        } else {
+                        ret += address[i]
+                        }
+                    }
+                    return VisionWeb.address.fromHex(ret);
+                } catch {
+                    return false;
+                }
+
+            }
         };
     }
 
