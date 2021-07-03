@@ -357,8 +357,7 @@ export default class TransactionBuilder {
                         name: "resource",
                         type: "resource",
                         value: resource,
-                        msg:
-                            'Invalid resource provided: Expected "PHOTON" or "ENTROPY',
+                        msg: 'Invalid resource provided: Expected "PHOTON","ENTROPY","SPREAD" or "SRGUARANTEE"',
                     },
                 ],
                 callback
@@ -450,8 +449,7 @@ export default class TransactionBuilder {
                         name: "resource",
                         type: "resource",
                         value: resource,
-                        msg:
-                            'Invalid resource provided: Expected "PHOTON" or "ENTROPY',
+                        msg: 'Invalid resource provided: Expected "PHOTON","ENTROPY","SPREAD" or "SRGUARANTEE"',
                     },
                 ],
                 callback

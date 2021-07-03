@@ -32,18 +32,8 @@ export default class Validator {
         let normalized = {};
         let no = false;
         for (const param of params) {
-            let {
-                name,
-                names,
-                value,
-                type,
-                gt,
-                lt,
-                gte,
-                lte,
-                se,
-                optional,
-            } = param;
+            let { name, names, value, type, gt, lt, gte, lte, se, optional } =
+                param;
             if (
                 optional &&
                 (!utils.isNotNullOrUndefined(value) ||
@@ -99,7 +89,14 @@ export default class Validator {
                     break;
 
                 case "resource":
-                    if (!["PHOTON", "ENTROPY"].includes(value)) {
+                    if (
+                        ![
+                            "PHOTON",
+                            "ENTROPY",
+                            "SPREAD",
+                            "SRGUARANTEE",
+                        ].includes(value)
+                    ) {
                         no = true;
                     }
                     break;
