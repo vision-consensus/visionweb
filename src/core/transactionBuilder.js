@@ -1043,7 +1043,6 @@ export default class TransactionBuilder {
         if (options.permissionId) {
             args.Permission_id = options.permissionId;
         }
-
         this.visionWeb[options.confirmed ? "solidityNode" : "fullNode"]
             .request(
                 `wallet${options.confirmed ? "solidity" : ""}/trigger${
