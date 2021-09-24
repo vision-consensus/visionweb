@@ -307,7 +307,12 @@ export default class VisionWeb extends EventEmitter {
                 } catch {
                     return false;
                 }
-
+            },
+            toEth(address){
+                if (VisionWeb.isAddress(address)) {
+                    return VisionWeb.address.toHex(address).replace(/^46/, '0x');
+                }
+                return false;
             }
         };
     }
