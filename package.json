@@ -1,6 +1,6 @@
 {
     "name": "visionweb",
-    "version": "1.0.9",
+    "version": "1.1.0",
     "description": "JavaScript SDK that encapsulates the Vision HTTP API",
     "main": "dist/VisionWeb.node.js",
     "scripts": {

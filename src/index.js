@@ -425,13 +425,16 @@ export default class VisionWeb extends EventEmitter {
 
     static isAddress(address = false) {
         if (!utils.isString(address)) return false;
-
+        let vAddress = address;
+        if (VisionWeb.address.fromEth(address)) {
+            vAddress = VisionWeb.address.fromEth(address)
+        }
         // Convert HEX to Base58
-        if (address.length === 42) {
+        if (vAddress.length === 42) {
             try {
                 return VisionWeb.isAddress(
                     utils.crypto.getBase58CheckAddress(
-                        utils.code.hexStr2byteArray(address) // it throws an error if the address starts with 0x
+                        utils.code.hexStr2byteArray(vAddress) // it throws an error if the address starts with 0x
                     )
                 );
             } catch (err) {
@@ -439,10 +442,18 @@ export default class VisionWeb extends EventEmitter {
             }
         }
         try {
-            return utils.crypto.isAddressValid(address);
+            return utils.crypto.isAddressValid(vAddress);
         } catch (err) {
             return false;
         }
+    }
+    static isEthAddress(address = false) {
+        if (!utils.isString(address)) return false;
+        if (!address || address.indexOf('0x') !== 0) {
+            return false;
+        }
+        const  vAddress = VisionWeb.address.fromEth(address)
+        return VisionWeb.isAddress(vAddress)
     }
 
     static async createAccount() {
