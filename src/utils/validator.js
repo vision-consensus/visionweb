@@ -94,7 +94,7 @@ export default class Validator {
                             "PHOTON",
                             "ENTROPY",
                             "SPREAD",
-                            "SRGUARANTEE",
+                            "FVGUARANTEE",
                         ].includes(value)
                     ) {
                         no = true;
