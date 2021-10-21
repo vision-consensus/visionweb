@@ -1561,10 +1561,22 @@ export default class TransactionBuilder {
             if (!utils.isObject(parameter)) return callback(invalid);
         }
 
-        const data = {
+        let data = {
             owner_address: toHex(issuerAddress),
-            parameters: parameters,
         };
+        
+        let ParametersWith45 = parameters.filter(function (obj) {
+            return obj.key === 45 || obj.key === 46;
+        });
+        let ParametersWithout45 = parameters.filter(function (obj) {
+            return obj.key !== 45 && obj.key !== 46;
+        });
+        if(ParametersWith45.length){
+            data.string_parameters = ParametersWith45;
+        }
+        if(ParametersWithout45.length){
+            data.parameters = ParametersWithout45;
+        }
 
         if (options && options.permissionId) {
             data.Permission_id = options.permissionId;
