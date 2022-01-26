@@ -7,6 +7,8 @@ const toUtf8Bytes = utils.toUtf8Bytes;
 const recoverAddress = utils.recoverAddress;
 const SigningKey = utils.SigningKey;
 const AbiCoder = utils.AbiCoder;
+const Fragment = utils.Fragment;
+const getAddress = utils.getAddress;
 
 export {
     keccak256,
@@ -14,5 +16,7 @@ export {
     toUtf8Bytes,
     recoverAddress,
     SigningKey,
-    AbiCoder
+    AbiCoder,
+    Fragment,
+    getAddress
 }

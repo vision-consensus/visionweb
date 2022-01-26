@@ -895,6 +895,7 @@ export default class TransactionBuilder {
         options = {},
         parameters = [],
         issuerAddress = this.visionWeb.defaultAddress.hex,
+        inputs,
         callback = false
     ) {
         if (utils.isFunction(issuerAddress)) {
@@ -914,7 +915,8 @@ export default class TransactionBuilder {
                 functionSelector,
                 options,
                 parameters,
-                issuerAddress
+                issuerAddress,
+                inputs
             );
         }
 
@@ -946,6 +948,7 @@ export default class TransactionBuilder {
                         name: "parameters",
                         type: "array",
                         value: parameters,
+                        optional: true,
                     },
                     {
                         name: "contract",
@@ -1002,7 +1005,9 @@ export default class TransactionBuilder {
                     value = value.map((v) =>
                         toHex(v).replace(ADDRESS_PREFIX_REGEX, "0x")
                     );
-
+                else if (type == "tuple[]") {
+                    type = inputs[0]
+                }
                 types.push(type);
                 values.push(value);
             }
@@ -1030,6 +1035,7 @@ export default class TransactionBuilder {
             function_selector: functionSelector,
             parameter: parameters,
         };
+        console.log(args)
 
         if (!options._isConstant) {
             args.call_value = parseInt(callValue);
