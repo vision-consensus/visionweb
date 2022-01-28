@@ -919,7 +919,9 @@ export default class TransactionBuilder {
                 inputs
             );
         }
-
+        if (options._isConstant && !issuerAddress) {
+            issuerAddress = '460000000000000000000000000000000000000000'
+        }
         let { tokenValue, tokenId, callValue, feeLimit } = Object.assign(
             {
                 callValue: 0,
@@ -1035,7 +1037,6 @@ export default class TransactionBuilder {
             function_selector: functionSelector,
             parameter: parameters,
         };
-        console.log(args)
 
         if (!options._isConstant) {
             args.call_value = parseInt(callValue);
