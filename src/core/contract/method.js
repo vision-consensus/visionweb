@@ -1,7 +1,8 @@
 import utils from "utils";
 import { ADDRESS_PREFIX_REGEX } from "config/address";
 import injectpromise from "injectpromise";
-import { Fragment } from "../../utils/ethersUtils";
+import { Fragment }from "@ethersproject/abi";
+
 
 const getFunctionSelector = (abi) => {
     try {
