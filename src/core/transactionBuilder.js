@@ -989,7 +989,7 @@ export default class TransactionBuilder {
             return;
 
         functionSelector = functionSelector.replace("/s*/g", "");
-
+    
         if (parameters.length) {
             const abiCoder = new AbiCoder();
             let types = [];
@@ -1050,6 +1050,8 @@ export default class TransactionBuilder {
         if (options.permissionId) {
             args.Permission_id = options.permissionId;
         }
+        console.log(args)
+        
         this.visionWeb[options.confirmed ? "solidityNode" : "fullNode"]
             .request(
                 `wallet${options.confirmed ? "solidity" : ""}/trigger${
