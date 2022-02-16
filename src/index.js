@@ -516,14 +516,14 @@ window.initVisionWeb = function(fullHost, address) {
     visionWeb.vs.sign = (transaction) => {
         return new Promise(resolve => {
             console.log('Input：', transaction)
-            // if (isAndroid) {
-            //     window.nativeVtimes.sign(JSON.stringify(transaction))
-            // } else {
+            if (isAndroid) {
+                window.nativeVtimes.sign(JSON.stringify(transaction))
+            } else {
                 window.webkit.messageHandlers.sign.postMessage(JSON.stringify(transaction))
-            // }
+            }
             window.signCallback = (signResult) => {
                 console.log('Output：', signResult)
-                resolve(signResult)
+                resolve(JSON.parse(signResult))
             }
             
         })
