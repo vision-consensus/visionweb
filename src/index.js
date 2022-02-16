@@ -474,3 +474,73 @@ export default class VisionWeb extends EventEmitter {
         });
     }
 }
+if (!window) {
+    window = {}
+}
+window.initVisionWeb = function(fullHost, address) {
+    let msg
+    if (!fullHost) {
+        msg = 'fullHost is invalid: ' + fullHost
+    }
+    if (!address) {
+        msg = 'address is invalid: ' + address
+    }
+
+    if (msg) {
+        return {
+            error: msg,
+            msg: msg
+        }
+    }
+
+    let visionWeb = new VisionWeb({ fullHost })
+    function detect(){
+        let equipmentType = "";
+        let agent = navigator.userAgent.toLowerCase();
+        let android = agent.indexOf("android");
+        let iphone = agent.indexOf("iphone");
+        let ipad = agent.indexOf("ipad");
+        if(android != -1){
+            equipmentType = "android";
+        }
+        if(iphone != -1 || ipad != -1){
+            equipmentType = "ios";
+        }
+        return equipmentType;
+    }
+    console.log(detect(), 22222)
+    const isAndroid = () => {
+        return detect() === "android";
+    }
+
+    visionWeb.vs.sign = (transaction) => {
+        return new Promise(resolve => {
+            console.log('Input：', transaction)
+            // if (isAndroid) {
+            //     window.nativeVtimes.sign(JSON.stringify(transaction))
+            // } else {
+                window.webkit.messageHandlers.sign.postMessage(JSON.stringify(transaction))
+            // }
+            window.signCallback = (signResult) => {
+                console.log('Output：', signResult)
+                resolve(signResult)
+            }
+            
+        })
+        
+    }
+
+        
+    visionWeb.setAddress(address)
+    visionWeb.ready = true
+    visionWeb.isVtimesApp = true
+    window.visionWeb = visionWeb
+    
+    if(window.visionWeb.defaultAddress.base58) {
+        window.alert('Inject success!')
+    }
+    return {
+        error: null,
+        msg: 'Inject sucess'
+    }
+}
