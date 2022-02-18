@@ -508,21 +508,18 @@ window.initVisionWeb = function(fullHost, address) {
         }
         return equipmentType;
     }
-    console.log(detect(), 22222)
     const isAndroid = () => {
         return detect() === "android";
     }
 
     visionWeb.vs.sign = (transaction) => {
         return new Promise(resolve => {
-            console.log('Input：', transaction)
-            if (isAndroid) {
+            if (isAndroid()) {
                 window.nativeVtimes.sign(JSON.stringify(transaction))
             } else {
                 window.webkit.messageHandlers.sign.postMessage(JSON.stringify(transaction))
             }
             window.signCallback = (signResult) => {
-                console.log('Output：', signResult)
                 resolve(JSON.parse(signResult))
             }
             
@@ -530,15 +527,13 @@ window.initVisionWeb = function(fullHost, address) {
         
     }
 
+    visionWeb.vs.sign.bind(visionWeb.vs);
         
     visionWeb.setAddress(address)
     visionWeb.ready = true
     visionWeb.isVtimesApp = true
     window.visionWeb = visionWeb
-    
-    if(window.visionWeb.defaultAddress.base58) {
-        window.alert('Inject success!')
-    }
+
     return {
         error: null,
         msg: 'Inject sucess'
