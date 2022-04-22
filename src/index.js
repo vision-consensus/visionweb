@@ -511,8 +511,38 @@ window.initVisionWeb = function(fullHost, address) {
     const isAndroid = () => {
         return detect() === "android";
     }
-
+    // {
+    //     "visible": false,
+    //     "txID": "dcff5bcc3920ba73f549457eb0fb770f18033de6c3f41cbaebd0bee72d0b878d",
+    //     "raw_data": {
+    //         "contract": [
+    //             {
+    //                 "parameter": {
+    //                     "value": {
+    //                         "amount": 1000000,
+    //                         "owner_address": "4644fde2e80e7d3f7f8e61d7e1140199f33f3fc946",
+    //                         "to_address": "4601c31f8e778f248c45bfc9129f0fd547d46ffcb2"
+    //                     },
+    //                     "type_url": "type.googleapis.com/protocol.TransferContract"
+    //                 },
+    //                 "type": "TransferContract"
+    //             }
+    //         ],
+    //         "ref_block_bytes": "817e",
+    //         "ref_block_hash": "fdaa4bde1d466f4c",
+    //         "expiration": 1650452319000,
+    //         "timestamp": 1650452260600
+    //     },
+    //     "raw_data_hex": "0a02817e2208fdaa4bde1d466f4c409896ffb484305a67080112630a2d747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e5472616e73666572436f6e747261637412320a154644fde2e80e7d3f7f8e61d7e1140199f33f3fc94612154601c31f8e778f248c45bfc9129f0fd547d46ffcb218c0843d70f8cdfbb48430"
+    // }
     visionWeb.vs.sign = (transaction) => {
+        let isString = typeof transaction === 'string'
+        if (isString) {
+            transaction = {
+                type: 'signString',
+                raw_data_hex: transaction
+            }
+        }
         return new Promise(resolve => {
             if (isAndroid()) {
                 window.nativeVtimes.sign(JSON.stringify(transaction))
@@ -520,7 +550,9 @@ window.initVisionWeb = function(fullHost, address) {
                 window.webkit.messageHandlers.sign.postMessage(JSON.stringify(transaction))
             }
             window.signCallback = (signResult) => {
-                resolve(JSON.parse(signResult))
+                let res = JSON.parse(signResult)
+                console.log(signResult)
+                resolve(isString ? res.signature[0] : res)
             }
             
         })
