@@ -281,6 +281,7 @@ export default class TransactionBuilder {
         duration = 3,
         resource = "PHOTON",
         address = this.visionWeb.defaultAddress.hex,
+        freezeBalanceStage = undefined,
         receiverAddress = undefined,
         options,
         callback = false
@@ -296,6 +297,14 @@ export default class TransactionBuilder {
         } else if (utils.isObject(receiverAddress)) {
             options = receiverAddress;
             receiverAddress = undefined;
+        }
+
+        if (utils.isFunction(freezeBalanceStage)) {
+            callback = freezeBalanceStage;
+            freezeBalanceStage = undefined;
+        } else if (utils.isObject(freezeBalanceStage)) {
+            options = freezeBalanceStage;
+            freezeBalanceStage = undefined;
         }
 
         if (utils.isFunction(address)) {
@@ -323,6 +332,7 @@ export default class TransactionBuilder {
                 duration,
                 resource,
                 address,
+                freezeBalanceStage,
                 receiverAddress,
                 options
             );
@@ -371,7 +381,12 @@ export default class TransactionBuilder {
             frozen_duration: parseInt(duration),
             resource: resource,
         };
-
+        if (freezeBalanceStage && freezeBalanceStage.length > 0) {
+            data.freezeBalanceStage = freezeBalanceStage.map(item => ({
+                ...item,
+                frozen_balance: parseInt(item.frozen_balance)
+            }));
+        }
         if (
             utils.isNotNullOrUndefined(receiverAddress) &&
             toHex(receiverAddress) !== toHex(address)
@@ -393,6 +408,7 @@ export default class TransactionBuilder {
         resource = "PHOTON",
         address = this.visionWeb.defaultAddress.hex,
         receiverAddress = undefined,
+        stages = undefined,
         options,
         callback = false
     ) {
@@ -400,7 +416,13 @@ export default class TransactionBuilder {
             callback = options;
             options = {};
         }
-
+        if (utils.isFunction(stages)) {
+            callback = stages;
+            stages = undefined;
+        } else if (utils.isObject(stages)) {
+            options = stages;
+            stages = undefined;
+        }
         if (utils.isFunction(receiverAddress)) {
             callback = receiverAddress;
             receiverAddress = undefined;
@@ -428,6 +450,7 @@ export default class TransactionBuilder {
                 resource,
                 address,
                 receiverAddress,
+                stages,
                 options
             );
 
@@ -467,6 +490,10 @@ export default class TransactionBuilder {
             toHex(receiverAddress) !== toHex(address)
         ) {
             data.receiver_address = toHex(receiverAddress);
+        }
+
+        if (stages && stages.length > 0) {
+            data.stages = stages;
         }
 
         if (options && options.permissionId) {
