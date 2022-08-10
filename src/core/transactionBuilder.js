@@ -1077,7 +1077,6 @@ export default class TransactionBuilder {
         if (options.permissionId) {
             args.Permission_id = options.permissionId;
         }
-        console.log(args)
         
         this.visionWeb[options.confirmed ? "solidityNode" : "fullNode"]
             .request(
@@ -1602,10 +1601,10 @@ export default class TransactionBuilder {
         };
         
         let ParametersWith45 = parameters.filter(function (obj) {
-            return obj.key === 45 || obj.key === 46;
+            return obj.key === 45 || obj.key === 46 || obj.key === 59;
         });
         let ParametersWithout45 = parameters.filter(function (obj) {
-            return obj.key !== 45 && obj.key !== 46;
+            return obj.key !== 45 && obj.key !== 46 && obj.key !== 59;
         });
         if(ParametersWith45.length){
             data.string_parameters = ParametersWith45;
@@ -1617,7 +1616,6 @@ export default class TransactionBuilder {
         if (options && options.permissionId) {
             data.Permission_id = options.permissionId;
         }
-
         this.visionWeb.fullNode
             .request("wallet/proposalcreate", data, "post")
             .then((transaction) => resultManager(transaction, callback))
