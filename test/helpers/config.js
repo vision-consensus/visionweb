@@ -46,16 +46,16 @@ module.exports = {
     },
     VDT_NETWORK: process.env.VDT_NETWORK,
     SIDE_CHAIN: {
-        fullNode: 'https://testhttpapi.visionex.io',
-        solidityNode: 'https://testhttpapi.visionex.io',
-        eventServer: 'https://testhttpapi.visionex.io',
+        fullNode: 'https://vtest.infragrid.v.networko',
+        solidityNode: 'https://vtest.infragrid.v.network',
+        eventServer: 'https://vtest.infragrid.v.network',
         sideOptions: {
-            fullNode: 'https://vdttest.visionex.io',
-            solidityNode: 'https://vdttest.visionex.io',
-            eventServer: 'https://vdttest.visionex.io',
-            mainGatewayAddress: 'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
-            sideGatewayAddress: 'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
-            sideChainId: '413AF23F37DA0D48234FDD43D89931E98E1144481B'
+            fullNode: '',
+            solidityNode: '',
+            eventServer: '',
+            mainGatewayAddress: '',
+            sideGatewayAddress: '',
+            sideChainId: ''
         }
     },
     TOKEN_ID: 1000003,

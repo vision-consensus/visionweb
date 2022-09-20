@@ -1,9 +1,16 @@
 import utils from "utils";
 import { ADDRESS_PREFIX_REGEX } from "config/address";
 import injectpromise from "injectpromise";
+import { Fragment }from "@ethersproject/abi";
+
 
 const getFunctionSelector = (abi) => {
-    return abi.name + "(" + getParamTypes(abi.inputs || []).join(",") + ")";
+    try {
+        return Fragment.from(abi).format();
+    } catch(err) {
+        return abi.name + "(" + getParamTypes(abi.inputs || []).join(",") + ")";
+    }
+    
 };
 
 const getParamTypes = (params) => {
@@ -63,6 +70,9 @@ export default class Method {
                         .replace(ADDRESS_PREFIX_REGEX, "0x");
                 });
             }
+            if (types[index] == 'tuple[]') {
+
+            }
         });
 
         return {
@@ -116,6 +126,7 @@ export default class Method {
             options,
             parameters,
             options.from ? this.visionWeb.address.toHex(options.from) : false,
+            this.inputs,
             (err, transaction) => {
                 if (err) return callback(err);
 

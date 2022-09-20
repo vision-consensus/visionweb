@@ -14,6 +14,7 @@ import SideChain from "core/sidechain";
 import { keccak256 } from "utils/ethersUtils";
 import { ADDRESS_PREFIX } from "config/address";
 import createKeccakHash from 'keccak';
+import { getAddress } from "utils/ethersUtils";
 
 const DEFAULT_VERSION = "1.0.0";
 
@@ -310,7 +311,7 @@ export default class VisionWeb extends EventEmitter {
             },
             toEth(address){
                 if (VisionWeb.isAddress(address)) {
-                    return VisionWeb.address.toHex(address).replace(/^46/, '0x');
+                    return getAddress(VisionWeb.address.toHex(address).replace(/^46/, '0x')) ;
                 }
                 return false;
             }

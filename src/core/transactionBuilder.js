@@ -281,6 +281,7 @@ export default class TransactionBuilder {
         duration = 3,
         resource = "PHOTON",
         address = this.visionWeb.defaultAddress.hex,
+        freezeBalanceStage = undefined,
         receiverAddress = undefined,
         options,
         callback = false
@@ -296,6 +297,14 @@ export default class TransactionBuilder {
         } else if (utils.isObject(receiverAddress)) {
             options = receiverAddress;
             receiverAddress = undefined;
+        }
+
+        if (utils.isFunction(freezeBalanceStage)) {
+            callback = freezeBalanceStage;
+            freezeBalanceStage = undefined;
+        } else if (utils.isObject(freezeBalanceStage)) {
+            options = freezeBalanceStage;
+            freezeBalanceStage = undefined;
         }
 
         if (utils.isFunction(address)) {
@@ -323,6 +332,7 @@ export default class TransactionBuilder {
                 duration,
                 resource,
                 address,
+                freezeBalanceStage,
                 receiverAddress,
                 options
             );
@@ -371,7 +381,12 @@ export default class TransactionBuilder {
             frozen_duration: parseInt(duration),
             resource: resource,
         };
-
+        if (freezeBalanceStage && freezeBalanceStage.length > 0) {
+            data.freezeBalanceStage = freezeBalanceStage.map(item => ({
+                ...item,
+                frozen_balance: parseInt(item.frozen_balance)
+            }));
+        }
         if (
             utils.isNotNullOrUndefined(receiverAddress) &&
             toHex(receiverAddress) !== toHex(address)
@@ -393,6 +408,7 @@ export default class TransactionBuilder {
         resource = "PHOTON",
         address = this.visionWeb.defaultAddress.hex,
         receiverAddress = undefined,
+        stages = undefined,
         options,
         callback = false
     ) {
@@ -400,7 +416,13 @@ export default class TransactionBuilder {
             callback = options;
             options = {};
         }
-
+        if (utils.isFunction(stages)) {
+            callback = stages;
+            stages = undefined;
+        } else if (utils.isObject(stages)) {
+            options = stages;
+            stages = undefined;
+        }
         if (utils.isFunction(receiverAddress)) {
             callback = receiverAddress;
             receiverAddress = undefined;
@@ -428,6 +450,7 @@ export default class TransactionBuilder {
                 resource,
                 address,
                 receiverAddress,
+                stages,
                 options
             );
 
@@ -467,6 +490,10 @@ export default class TransactionBuilder {
             toHex(receiverAddress) !== toHex(address)
         ) {
             data.receiver_address = toHex(receiverAddress);
+        }
+
+        if (stages && stages.length > 0) {
+            data.stages = stages;
         }
 
         if (options && options.permissionId) {
@@ -895,6 +922,7 @@ export default class TransactionBuilder {
         options = {},
         parameters = [],
         issuerAddress = this.visionWeb.defaultAddress.hex,
+        inputs,
         callback = false
     ) {
         if (utils.isFunction(issuerAddress)) {
@@ -914,10 +942,13 @@ export default class TransactionBuilder {
                 functionSelector,
                 options,
                 parameters,
-                issuerAddress
+                issuerAddress,
+                inputs
             );
         }
-
+        if (options._isConstant && !issuerAddress) {
+            issuerAddress = '460000000000000000000000000000000000000000'
+        }
         let { tokenValue, tokenId, callValue, feeLimit } = Object.assign(
             {
                 callValue: 0,
@@ -946,6 +977,7 @@ export default class TransactionBuilder {
                         name: "parameters",
                         type: "array",
                         value: parameters,
+                        optional: true,
                     },
                     {
                         name: "contract",
@@ -984,7 +1016,7 @@ export default class TransactionBuilder {
             return;
 
         functionSelector = functionSelector.replace("/s*/g", "");
-
+    
         if (parameters.length) {
             const abiCoder = new AbiCoder();
             let types = [];
@@ -1002,7 +1034,9 @@ export default class TransactionBuilder {
                     value = value.map((v) =>
                         toHex(v).replace(ADDRESS_PREFIX_REGEX, "0x")
                     );
-
+                else if (type == "tuple[]") {
+                    type = inputs[0]
+                }
                 types.push(type);
                 values.push(value);
             }
@@ -1043,6 +1077,7 @@ export default class TransactionBuilder {
         if (options.permissionId) {
             args.Permission_id = options.permissionId;
         }
+        
         this.visionWeb[options.confirmed ? "solidityNode" : "fullNode"]
             .request(
                 `wallet${options.confirmed ? "solidity" : ""}/trigger${
@@ -1566,10 +1601,10 @@ export default class TransactionBuilder {
         };
         
         let ParametersWith45 = parameters.filter(function (obj) {
-            return obj.key === 45 || obj.key === 46;
+            return obj.key === 45 || obj.key === 46 || obj.key === 59;
         });
         let ParametersWithout45 = parameters.filter(function (obj) {
-            return obj.key !== 45 && obj.key !== 46;
+            return obj.key !== 45 && obj.key !== 46 && obj.key !== 59;
         });
         if(ParametersWith45.length){
             data.string_parameters = ParametersWith45;
@@ -1581,7 +1616,6 @@ export default class TransactionBuilder {
         if (options && options.permissionId) {
             data.Permission_id = options.permissionId;
         }
-
         this.visionWeb.fullNode
             .request("wallet/proposalcreate", data, "post")
             .then((transaction) => resultManager(transaction, callback))
