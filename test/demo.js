@@ -1,8 +1,8 @@
-const VisionWeb = require('../dist/VisionWeb.node.js');
+const VisionWeb = require('../dist/VisionWeb.extension.js');
 
 const HttpProvider = VisionWeb.providers.HttpProvider;
 
-const rpc = 'https://vtest.infragrid.v.network'
+const rpc = 'https://infragrid.v.network'
 const FullNode = new HttpProvider(rpc);
 const SolidityNode = new HttpProvider(rpc);
 const EventServer = new HttpProvider(rpc);
@@ -11,8 +11,9 @@ const visionWeb = new VisionWeb(rpc, rpc, rpc, PrivateKey);
 
 
 async function main() {
-    // const balance = await visionWeb.vs.getBalance('VLamiuQzTcXrJnRM5R1qfZhTbPUdghKR8g');
-    const balance = await visionWeb.vs.getAccountResources('VLamiuQzTcXrJnRM5R1qfZhTbPUdghKR8g');
+    const balance = await visionWeb.vs.getBalance('VLamiuQzTcXrJnRM5R1qfZhTbPUdghKR8g');
+    console.log(balance)
+    // const balance = await visionWeb.vs.getAccountResources('VLamiuQzTcXrJnRM5R1qfZhTbPUdghKR8g');
     // let unSignTransaction = await visionWeb.transactionBuilder.freezeBalance(
     //     visionWeb.toVdt(1),
     //     35,

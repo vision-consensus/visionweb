@@ -5,8 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="../dist/VisionWeb.js"></script>
-    <script>
+    <script src="../dist/VisionWeb.extension.js"></script>
+    <script type="importmap">
+        {
+         "imports": {
+          "visionWeb": "../dist/VisionWeb.extension.js"
+         }
+        }
+       </script>
+    <script type="module">
+        // import * as VisionWeb from '../dist/VisionWeb.extension.js'
+        console.log(VisionWeb)
+        const rpc = 'https://infragrid.v.network'
+        const PrivateKey = "";
+        const visionWeb = new VisionWeb(rpc, rpc, rpc, PrivateKey);
+        async function main1() {
+            const res = await visionWeb.vs.getUnconfirmedAccount('VApYMCKryJTqKsrqLiWuLPb2QKQuWiZ5hM')
+            console.log(res)
+        }
+        main1()
         async function main() {
             const balance = await visionWeb.vs.getBalance('VGx21ymGwuW9ybAcjRyJFA1qB8Ep8qpezQ');
             console.log(balance)
@@ -48,13 +65,13 @@
             const broadcast = await visionWeb.vs.sendRawTransaction(signedTransaction);
             console.log(broadcast)
         }
-        const timer = setInterval(function() {
-            console.log(window.visionWeb.defaultAddress)
-            if (window.visionWeb && window.visionWeb.defaultAddress) {
-                clearInterval(timer);
-                main();
-            }
-        }, 100)
+        // const timer = setInterval(function() {
+        //     console.log(window.visionWeb.defaultAddress)
+        //     if (window.visionWeb && window.visionWeb.defaultAddress) {
+        //         clearInterval(timer);
+        //         main();
+        //     }
+        // }, 100)
         // main();
     </script>
 </head>
