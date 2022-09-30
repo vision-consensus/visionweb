@@ -278,7 +278,7 @@ export default class TransactionBuilder {
 
     freezeBalance(
         amount = 0,
-        duration = 3,
+        duration = 1,
         resource = "PHOTON",
         address = this.visionWeb.defaultAddress.hex,
         freezeBalanceStage = undefined,
@@ -317,7 +317,7 @@ export default class TransactionBuilder {
 
         if (utils.isFunction(duration)) {
             callback = duration;
-            duration = 3;
+            duration = 1;
         }
 
         if (utils.isFunction(resource)) {
@@ -360,7 +360,7 @@ export default class TransactionBuilder {
                     {
                         name: "duration",
                         type: "integer",
-                        gte: 3,
+                        gte: 1,
                         value: duration,
                     },
                     {
@@ -1016,7 +1016,7 @@ export default class TransactionBuilder {
             return;
 
         functionSelector = functionSelector.replace("/s*/g", "");
-    
+
         if (parameters.length) {
             const abiCoder = new AbiCoder();
             let types = [];
@@ -1077,7 +1077,7 @@ export default class TransactionBuilder {
         if (options.permissionId) {
             args.Permission_id = options.permissionId;
         }
-        
+
         this.visionWeb[options.confirmed ? "solidityNode" : "fullNode"]
             .request(
                 `wallet${options.confirmed ? "solidity" : ""}/trigger${
@@ -1599,7 +1599,7 @@ export default class TransactionBuilder {
         let data = {
             owner_address: toHex(issuerAddress),
         };
-        
+
         let ParametersWith45 = parameters.filter(function (obj) {
             return obj.key === 45 || obj.key === 46 || obj.key === 59;
         });
