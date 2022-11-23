@@ -1045,11 +1045,9 @@ export default class TransactionBuilder {
                     return type;
                 });
                 if(types[0]==='tuple') {
-                    // console.log(inputs[0].components.map(({type})=>type))
                     parameters = abiCoder
                     .encode(inputs[0].components.map(({type})=>type), values[0])
                     .replace(/^(0x)/, "");
-                    // parameters = values[0]
                 } else {
                     abiCoder
                     .encode(types, values)
