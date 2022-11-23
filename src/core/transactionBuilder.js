@@ -929,12 +929,10 @@ export default class TransactionBuilder {
             callback = issuerAddress;
             issuerAddress = this.visionWeb.defaultAddress.hex;
         }
-
         if (utils.isFunction(parameters)) {
             callback = parameters;
             parameters = [];
         }
-
         if (!callback) {
             return this.injectPromise(
                 this._triggerSmartContract,
@@ -956,7 +954,6 @@ export default class TransactionBuilder {
             },
             options
         );
-
         if (
             this.validator.notValid(
                 [
@@ -1014,9 +1011,8 @@ export default class TransactionBuilder {
             )
         )
             return;
-
         functionSelector = functionSelector.replace("/s*/g", "");
-    
+
         if (parameters.length) {
             const abiCoder = new AbiCoder();
             let types = [];
@@ -1040,7 +1036,6 @@ export default class TransactionBuilder {
                 types.push(type);
                 values.push(value);
             }
-
             try {
                 // workaround for unsupported vrcToken type
                 types = types.map((type) => {
@@ -1049,22 +1044,29 @@ export default class TransactionBuilder {
                     }
                     return type;
                 });
-
-                parameters = abiCoder
+                if(types[0]==='tuple') {
+                    // console.log(inputs[0].components.map(({type})=>type))
+                    parameters = abiCoder
+                    .encode(inputs[0].components.map(({type})=>type), values[0])
+                    .replace(/^(0x)/, "");
+                    // parameters = values[0]
+                } else {
+                    abiCoder
                     .encode(types, values)
                     .replace(/^(0x)/, "");
+                }
+                
+                    
             } catch (ex) {
                 return callback(ex);
             }
         } else parameters = "";
-
         const args = {
             contract_address: toHex(contractAddress),
             owner_address: toHex(issuerAddress),
             function_selector: functionSelector,
             parameter: parameters,
         };
-
         if (!options._isConstant) {
             args.call_value = parseInt(callValue);
             args.fee_limit = parseInt(feeLimit);
@@ -1073,11 +1075,9 @@ export default class TransactionBuilder {
             if (utils.isNotNullOrUndefined(tokenId))
                 args.token_id = parseInt(tokenId);
         }
-
         if (options.permissionId) {
             args.Permission_id = options.permissionId;
         }
-        
         this.visionWeb[options.confirmed ? "solidityNode" : "fullNode"]
             .request(
                 `wallet${options.confirmed ? "solidity" : ""}/trigger${
