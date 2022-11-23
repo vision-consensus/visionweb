@@ -860,6 +860,13 @@ export default class TransactionBuilder {
             }
 
             try {
+                types = types.map((typ, index) => {
+                    const t = inputs?.[index]?.components?.map(({type})=>type) || []
+                    if (typ ==='tuple') {
+                        typ = `tuple(${t.join(',')})`
+                    }
+                    return typ;
+                });
                 parameters = abiCoder
                     .encode(types, values)
                     .replace(/^(0x)/, "");
@@ -1044,17 +1051,16 @@ export default class TransactionBuilder {
                     }
                     return type;
                 });
-                if(types[0]==='tuple') {
-                    parameters = abiCoder
-                    .encode(inputs[0].components.map(({type})=>type), values[0])
-                    .replace(/^(0x)/, "");
-                } else {
-                    abiCoder
+                types = types.map((typ, index) => {
+                    const t = inputs?.[index]?.components?.map(({type})=>type) || []
+                    if (typ ==='tuple') {
+                        typ = `tuple(${t.join(',')})`
+                    }
+                    return typ;
+                });
+                parameters = abiCoder
                     .encode(types, values)
-                    .replace(/^(0x)/, "");
-                }
-                
-                    
+                    .replace(/^(0x)/, ""); 
             } catch (ex) {
                 return callback(ex);
             }
