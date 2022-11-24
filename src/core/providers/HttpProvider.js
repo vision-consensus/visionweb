@@ -1,5 +1,6 @@
 import axios from 'axios';
 import utils from 'utils';
+import fetchs from './fetch';
 
 export default class HttpProvider {
     constructor(host, timeout = 30000, user = false, password = false, headers = {}, statusPage = '/') {
@@ -20,16 +21,28 @@ export default class HttpProvider {
         this.password = password;
         this.headers = headers;
         this.statusPage = statusPage;
-
-        this.instance = axios.create({
-            baseURL: host,
-            timeout: timeout,
-            headers: headers,
-            auth: user && {
-                user,
-                password
-            },
-        });
+        if (process.metadata && process.metadata.isExtension) {
+            this.instance = fetchs.create({
+                baseURL: host,
+                timeout: timeout,
+                headers: headers,
+                auth: user && {
+                    user,
+                    password
+                },
+            })
+        } else {
+            this.instance = axios.create({
+                baseURL: host,
+                timeout: timeout,
+                headers: headers,
+                auth: user && {
+                    user,
+                    password
+                },
+            });
+        }
+        
     }
 
     setStatusPage(statusPage = '/') {

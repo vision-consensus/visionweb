@@ -474,3 +474,4 @@ export default class VisionWeb extends EventEmitter {
         });
     }
 }
+
