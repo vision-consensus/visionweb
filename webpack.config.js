@@ -159,5 +159,23 @@ module.exports = [
             })
         ]
             
-    }
+    },
+    {
+        ...baseConfig,
+        output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: 'VisionWeb.vtimesapp.js',
+            library: 'VisionWeb',
+            libraryTarget: 'umd',
+            libraryExport: 'default',
+            umdNamedDefine: true
+        },
+        plugins: [
+            new webpack.DefinePlugin({
+                'process.metadata': {
+                    isVtimesApp: true
+                }
+            })
+        ]
+    },
 ];
