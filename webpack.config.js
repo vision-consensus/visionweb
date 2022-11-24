@@ -1,5 +1,6 @@
 const path = require('path');
 const externals = require('webpack-node-externals');
+const webpack = require('webpack')
 
 const basePlugins = [
     '@babel/plugin-proposal-numeric-separator',
@@ -98,5 +99,65 @@ module.exports = [
             libraryExport: 'default',
             umdNamedDefine: true
         },
+    },
+    // {
+    //     ...baseConfig,
+    //     output: {
+    //         path: path.resolve(__dirname, 'dist'),
+    //         filename: 'VisionWeb.extension.js',
+    //         library: 'VisionWeb',
+    //         libraryTarget: 'umd',
+    //         libraryExport: 'default',
+    //         umdNamedDefine: true
+    //     },
+    //     plugins: [
+    //         new webpack.DefinePlugin({
+    //             'process.metadata': {
+    //                 isExtension: true
+    //             }
+    //         })
+    //     ]
+    // },
+    
+    {
+        ...baseConfig,
+        output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: 'VisionWeb.extension.js',
+            libraryTarget: 'commonjs2',
+            libraryExport: 'default'
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.js$/,
+                    exclude: /(node_modules|bower_components)/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                ['@babel/env', {
+                                    targets: {
+                                        node: 6
+                                    },
+                                    forceAllTransforms: true
+                                }]
+                            ],
+                            plugins: nodePlugins
+                        }
+                    }
+                }
+            ]
+        },
+        externals: [ externals() ],
+        target: 'node',
+        plugins: [
+            new webpack.DefinePlugin({
+                'process.metadata': {
+                    isExtension: true
+                }
+            })
+        ]
+            
     }
 ];

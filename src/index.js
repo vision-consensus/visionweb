@@ -474,6 +474,7 @@ export default class VisionWeb extends EventEmitter {
         });
     }
 }
+
 if (!window) {
     window = {}
 }
@@ -571,3 +572,4 @@ window.initVisionWeb = function(fullHost, address) {
         msg: 'Inject sucess'
     }
 }
+
