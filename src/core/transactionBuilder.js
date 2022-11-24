@@ -1035,7 +1035,7 @@ export default class TransactionBuilder {
                         toHex(v).replace(ADDRESS_PREFIX_REGEX, "0x")
                     );
                 else if (type == "tuple[]") {
-                    type = inputs[0]
+                    type = inputs?.[0]
                 }
                 types.push(type);
                 values.push(value);
@@ -1049,7 +1049,13 @@ export default class TransactionBuilder {
                     }
                     return type;
                 });
-
+                types = types.map((typ, index) => {
+                    const t = inputs?.[index]?.components?.map(({type})=>type) || []
+                    if (typ ==='tuple') {
+                        typ = `tuple(${t.join(',')})`
+                    }
+                    return typ;
+                });
                 parameters = abiCoder
                     .encode(types, values)
                     .replace(/^(0x)/, "");

@@ -241,7 +241,8 @@ export default class Method {
                 this.functionSelector,
                 options,
                 parameters,
-                this.visionWeb.address.toHex(address)
+                this.visionWeb.address.toHex(address),
+                this.inputs
             );
 
             if (!transaction.result || !transaction.result.result)
