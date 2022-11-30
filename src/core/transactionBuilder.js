@@ -929,12 +929,10 @@ export default class TransactionBuilder {
             callback = issuerAddress;
             issuerAddress = this.visionWeb.defaultAddress.hex;
         }
-
         if (utils.isFunction(parameters)) {
             callback = parameters;
             parameters = [];
         }
-
         if (!callback) {
             return this.injectPromise(
                 this._triggerSmartContract,
@@ -956,7 +954,6 @@ export default class TransactionBuilder {
             },
             options
         );
-
         if (
             this.validator.notValid(
                 [
@@ -1014,63 +1011,78 @@ export default class TransactionBuilder {
             )
         )
             return;
-
         functionSelector = functionSelector.replace("/s*/g", "");
 
         if (parameters.length) {
             const abiCoder = new AbiCoder();
-            let types = [];
-            const values = [];
-
-            for (let i = 0; i < parameters.length; i++) {
-                let { type, value } = parameters[i];
-
-                if (!type || !utils.isString(type) || !type.length)
-                    return callback("Invalid parameter type provided: " + type);
-
-                if (type == "address")
-                    value = toHex(value).replace(ADDRESS_PREFIX_REGEX, "0x");
-                else if (type == "address[]")
-                    value = value.map((v) =>
-                        toHex(v).replace(ADDRESS_PREFIX_REGEX, "0x")
-                    );
-                else if (type == "tuple[]") {
-                    type = inputs?.[0]
+            
+            // deal with address/tuple
+            const resolveType = (inputsObj) => { // values, inputs(includes types)
+                const typearr = inputsObj?.components || [] // types
+                const type = inputsObj?.type
+                if(type === 'tuple') {
+                    const newarr = typearr.map((comp, tindex) => comp.type.indexOf('tuple[') > -1 ? resolveType(typearr?.[tindex]): comp.type)
+                    return `tuple(${newarr.join(',')})`
+                } 
+                else if (/vrcToken/.test()) {
+                    return  type.replace(/vrcToken/, "uint256");
                 }
-                types.push(type);
-                values.push(value);
+                else if(type.indexOf('tuple[') > -1) {
+                    return `tuple(${typearr.map(({type})=>type).join(',')})[]`
+                } else return type
             }
+            const resolveValue = (arr = [], inputs) => {
+                const values = [];
+                for (let i = 0; i < arr.length; i++) {
+                    let { type, value } = arr[i];
+         
+                    if (!type || !isString(type) || !type.length){
+                        console.error("Invalid parameter type provided: " + type)
+                        return 
+                    }
+        
+                    if (type === "address") // address
+                        value = toHex(value).replace(ADDRESS_PREFIX_REGEX, "0x");
+        
+                    else if (type == "address[]") // address array
+                        value = value.map((v) =>
+                            toHex(v).replace(ADDRESS_PREFIX_REGEX, "0x")
+                        );
+        
+                    else if(type === "tuple") { // tuple
+                        const comps = inputs?.[i]?.components || []
+                        value =  resolveValue(comps.map((i,index)=>({type:i.type, value: value?.[index]})), comps)
+                    }
+        
+                    else if (type.indexOf("tuple[") > -1 ) { // tuple array
+                        const comps = inputs?.[i]?.components || []
+                        value = value.map(item=>resolveValue(item.map((j,subindex)=>({type: comps?.[subindex]?.type, value: j})), comps))
+                    }
+                    values.push(value);
+                   
+                }
+                return values
+                
+            }
+            const types = inputinit.map(item=>resolveType(item))
+            const values = resolveValue(parameters, inputinit)        
 
             try {
-                // workaround for unsupported vrcToken type
-                types = types.map((type) => {
-                    if (/vrcToken/.test(type)) {
-                        type = type.replace(/vrcToken/, "uint256");
-                    }
-                    return type;
-                });
-                types = types.map((typ, index) => {
-                    const t = inputs?.[index]?.components?.map(({type})=>type) || []
-                    if (typ ==='tuple') {
-                        typ = `tuple(${t.join(',')})`
-                    }
-                    return typ;
-                });
+                
                 parameters = abiCoder
-                    .encode(types, values)
-                    .replace(/^(0x)/, "");
+                .encode(types, values)
+                .replace(/^(0x)/, "");
+                    
             } catch (ex) {
                 return callback(ex);
             }
         } else parameters = "";
-
         const args = {
             contract_address: toHex(contractAddress),
             owner_address: toHex(issuerAddress),
             function_selector: functionSelector,
             parameter: parameters,
         };
-
         if (!options._isConstant) {
             args.call_value = parseInt(callValue);
             args.fee_limit = parseInt(feeLimit);
@@ -1079,11 +1091,9 @@ export default class TransactionBuilder {
             if (utils.isNotNullOrUndefined(tokenId))
                 args.token_id = parseInt(tokenId);
         }
-
         if (options.permissionId) {
             args.Permission_id = options.permissionId;
         }
-
         this.visionWeb[options.confirmed ? "solidityNode" : "fullNode"]
             .request(
                 `wallet${options.confirmed ? "solidity" : ""}/trigger${
