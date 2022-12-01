@@ -1036,7 +1036,7 @@ export default class TransactionBuilder {
                 for (let i = 0; i < arr.length; i++) {
                     let { type, value } = arr[i];
          
-                    if (!type || !isString(type) || !type.length){
+                    if (!type || !utils.isString(type) || !type.length){
                         console.error("Invalid parameter type provided: " + type)
                         return 
                     }
@@ -1064,8 +1064,8 @@ export default class TransactionBuilder {
                 return values
                 
             }
-            const types = inputinit.map(item=>resolveType(item))
-            const values = resolveValue(parameters, inputinit)        
+            const types = inputs.map(item=>resolveType(item))
+            const values = resolveValue(parameters, inputs)        
 
             try {
                 
