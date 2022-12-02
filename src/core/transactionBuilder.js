@@ -1020,16 +1020,14 @@ export default class TransactionBuilder {
             const resolveType = (inputsObj) => { // values, inputs(includes types)
                 const typearr = inputsObj?.components || [] // types
                 const type = inputsObj?.type
-                if(type === 'tuple') {
-                    const newarr = typearr.map((comp, tindex) => comp.type.indexOf('tuple[') > -1 ? resolveType(typearr?.[tindex]): comp.type)
-                    return `tuple(${newarr.join(',')})`
+                if(type.indexOf('tuple') > -1) {
+                    const newarr = typearr?.map((comp, tindex) => comp?.type?.indexOf('tuple') > -1 ? resolveType(typearr?.[tindex]): comp?.type)
+                    return `tuple(${newarr?.join(',')})${type?.indexOf('tuple[') > -1 ? '[]': ''}`
                 } 
                 else if (/vrcToken/.test()) {
                     return  type.replace(/vrcToken/, "uint256");
-                }
-                else if(type.indexOf('tuple[') > -1) {
-                    return `tuple(${typearr.map(({type})=>type).join(',')})[]`
-                } else return type
+                } 
+                else return type
             }
             const resolveValue = (arr = [], inputs) => {
                 const values = [];
@@ -1051,12 +1049,12 @@ export default class TransactionBuilder {
         
                     else if(type === "tuple") { // tuple
                         const comps = inputs?.[i]?.components || []
-                        value =  resolveValue(comps.map((i,index)=>({type:i.type, value: value?.[index]})), comps)
+                        value =  resolveValue(comps?.map((i,index)=>({type:i?.type, value: value?.[index]})), comps)
                     }
         
                     else if (type.indexOf("tuple[") > -1 ) { // tuple array
                         const comps = inputs?.[i]?.components || []
-                        value = value.map(item=>resolveValue(item.map((j,subindex)=>({type: comps?.[subindex]?.type, value: j})), comps))
+                        value = value.map(item=>resolveValue(item?.map((j,subindex)=>({type: comps?.[subindex]?.type, value: j})), comps))
                     }
                     values.push(value);
                    
